@@ -1,0 +1,86 @@
+{
+    "widgets": [
+        {
+            "type": "log",
+            "x": 0,
+            "y": 1,
+            "width": 12,
+            "height": 6,
+            "properties": {
+                "query": "SOURCE '/aws/containerinsights/insightstest/performance' | fields @timestamp, @message\n| sort @timestamp desc\n| filter Type=\"Pod\"\n| stats min(pod_number_of_containers) as requested, min(pod_number_of_running_containers) as running, ceil(avg(pod_number_of_containers-pod_number_of_running_containers)) as pods_missing by kubernetes.pod_name\n| sort pods_missing desc\n\n\n",
+                "region": "us-west-2",
+                "title": "Pods Requested vs Running"
+            }
+        },
+        {
+            "type": "log",
+            "x": 0,
+            "y": 13,
+            "width": 24,
+            "height": 6,
+            "properties": {
+                "query": "SOURCE '/aws/containerinsights/insightstest/performance' | fields @timestamp, ispresent(container_status) as hascontainer_status, kubernetes.pod_name, container_status, container_status_reason, container_last_termination_reason\n| sort @timestamp desc\n| filter Type=\"Container\"\n| filter container_status != \"Running\"\n| filter hascontainer_status",
+                "region": "us-west-2",
+                "title": "Failures: Last Container Status"
+            }
+        },
+        {
+            "type": "log",
+            "x": 12,
+            "y": 1,
+            "width": 12,
+            "height": 6,
+            "properties": {
+                "query": "SOURCE '/aws/containerinsights/insightstest/performance' | stats max(pod_number_of_container_restarts) as restarts by kubernetes.pod_name\n| filter Type=\"Pod\"\n| sort restarts desc\n| limit 10\n",
+                "region": "us-west-2",
+                "title": "Pod RESTARTS: Top 10"
+            }
+        },
+        {
+            "type": "log",
+            "x": 0,
+            "y": 7,
+            "width": 6,
+            "height": 6,
+            "properties": {
+                "query": "SOURCE '/aws/containerinsights/insightstest/performance' | stats avg(cluster_failed_node_count) as CountOfNodeFailures\n| filter Type=\"Cluster\"\n| sort @timestamp desc",
+                "region": "us-west-2",
+                "title": "Count of Cluster Node Failures"
+            }
+        },
+        {
+            "type": "text",
+            "x": 0,
+            "y": 0,
+            "width": 24,
+            "height": 1,
+            "properties": {
+                "markdown": "\n# Cluster Health Dashboard - InsightsTest\n"
+            }
+        },
+        {
+            "type": "log",
+            "x": 6,
+            "y": 7,
+            "width": 6,
+            "height": 6,
+            "properties": {
+                "query": "SOURCE '/aws/containerinsights/insightstest/application' | stats count() as countoferrors by kubernetes.container_name\n| filter stream=\"stderr\"\n| sort countoferrors desc\n",
+                "region": "us-west-2",
+                "title": "Application Log Errors: Count by container name"
+            }
+        },
+        {
+            "type": "log",
+            "x": 12,
+            "y": 7,
+            "width": 12,
+            "height": 6,
+            "properties": {
+                "query": "SOURCE '/aws/containerinsights/insightstest/performance' | stats floor(avg(container_filesystem_usage/1024)) as container_filesystem_usage_avg_kb by InstanceId, kubernetes.container_name, device\n| filter kubernetes.labels.product=\"storefront\"\n| filter Type=\"ContainerFS\"\n| sort container_filesystem_usage_avg_kb desc",
+                "region": "us-west-2",
+                "title": "Disk Usage by Container Name"
+            }
+        }
+    ]
+}
