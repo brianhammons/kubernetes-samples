@@ -43,7 +43,7 @@
             "width": 6,
             "height": 6,
             "properties": {
-                "query": "SOURCE '/aws/containerinsights/insightstest/performance' | stats avg(cluster_failed_node_count) as CountOfNodeFailures\n| filter Type=\"Cluster\"\n| sort @timestamp desc",
+                "query": "SOURCE '/aws/containerinsights/insightstest/performance' | stats max(cluster_failed_node_count) as CountOfNodeFailures\n| filter Type=\"Cluster\"\n| sort @timestamp desc",
                 "region": "us-west-2",
                 "title": "Count of Cluster Node Failures"
             }
@@ -77,7 +77,7 @@
             "width": 12,
             "height": 6,
             "properties": {
-                "query": "SOURCE '/aws/containerinsights/insightstest/performance' | stats floor(avg(container_filesystem_usage/1024)) as container_filesystem_usage_avg_kb by InstanceId, kubernetes.container_name, device\n| filter kubernetes.labels.product=\"storefront\"\n| filter Type=\"ContainerFS\"\n| sort container_filesystem_usage_avg_kb desc",
+                "query": "SOURCE '/aws/containerinsights/insightstest/performance' | stats floor(avg(container_filesystem_usage/1024)) as container_filesystem_usage_avg_kb by InstanceId, kubernetes.container_name, device\n| filter Type=\"ContainerFS\"\n| sort container_filesystem_usage_avg_kb desc",
                 "region": "us-west-2",
                 "title": "Disk Usage by Container Name"
             }

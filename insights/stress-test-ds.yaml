@@ -2,9 +2,14 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
+  labels:
+    app: stress-test
   name: stress-test
 spec:
-  replicas: 3
+  replicas: 5
+  selector:
+    matchLabels:
+      app: stress-test
   template:
     metadata: 
       labels:
@@ -27,7 +32,7 @@ spec:
       #   persistentVolumeClaim:
       #     claimName: insightsclaim
       containers:
-      - name: stress
+      - name: stress-test
         image: polinux/stress
         volumeMounts:
         - name: shared-data
