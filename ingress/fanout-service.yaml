@@ -1,0 +1,15 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: bar
+spec:
+  type: LoadBalancer
+  selector:
+    app.kubernetes.io/name: simple-service-example
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+    - name: https
+      port: 443
+      targetPort: https
