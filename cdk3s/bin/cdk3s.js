@@ -15,8 +15,9 @@ const k3sStack = new Cdk3SStack(app, 'k3sCluster', { env });
 
 new k3s.Cluster(k3sStack, 'Cluster', {
     vpc: k3s.VpcProvider.getOrCreate(k3sStack),
+    spotWorkerNodes: true,
     workerMinCapacity: 3,
-    workerInstanceType: new ec2.InstanceType('a1.medium'),
-    controlPlaneInstanceType: new ec2.InstanceType('a1.medium'),
+    workerInstanceType: new ec2.InstanceType('m6g.medium'),
+    controlPlaneInstanceType: new ec2.InstanceType('m6g.medium'),
     bucketRemovalPolicy: cdk.RemovalPolicy.DESTROY
 })
